@@ -8,6 +8,6 @@ import java.time.LocalDateTime;
 public class HelloService {
 
     public String sayHello() {
-        return "Hello Spring Boot World from Service 5 -" + LocalDateTime.now();
+        return "Hello Spring Boot World - Trainer - " + LocalDateTime.now();
     }
 }
