@@ -5,9 +5,12 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.xml.bind.annotation.XmlRootElement;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@XmlRootElement
 public class EmployeeDto {
 
     @Schema(description="id of the employee", example = "1")
