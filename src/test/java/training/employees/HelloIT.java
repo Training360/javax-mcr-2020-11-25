@@ -15,6 +15,6 @@ public class HelloIT {
     @Test
     void testSayHello() {
         String msg = helloController.sayHello();
-        assertTrue(msg.startsWith("Hello Spring Boot World from Service"));
+        assertTrue(msg.startsWith("Hello Spring Boot"));
     }
 }
