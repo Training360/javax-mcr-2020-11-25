@@ -56,4 +56,11 @@ public class EmployeesService {
         employee.setName(command.getName());
         return modelMapper.map(employee, EmployeeDto.class);
     }
+
+    public void deleteEmployee(long id) {
+        Employee employee = employees.stream()
+                .filter(e -> e.getId() == id)
+                .findAny().orElseThrow(() -> new IllegalArgumentException("Employee has not found with id" + id));
+        employees.remove(employee);
+    }
 }
