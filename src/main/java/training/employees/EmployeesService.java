@@ -63,4 +63,8 @@ public class EmployeesService {
                 .findAny().orElseThrow(() -> new IllegalArgumentException("Employee has not found with id" + id));
         employees.remove(employee);
     }
+
+    public void clearAll() {
+        employees.clear();
+    }
 }

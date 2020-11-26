@@ -8,7 +8,9 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Arrays;
 
+import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
@@ -31,7 +33,9 @@ public class EmployeesControllerIT {
         ));
 
         mockMvc.perform(get("/api/employees"))
-                .andDo(print());
+//                .andDo(print())
+                .andExpect(jsonPath("[1].name", equalTo("Jack Test Doe")))
+                .andExpect(status().isOk());
     }
 
 }
