@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.zalando.problem.Problem;
 import org.zalando.problem.Status;
@@ -56,7 +57,7 @@ public class EmployeesController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public EmployeeDto createEmployee(@RequestBody CreateEmployeeCommand command) {
+    public EmployeeDto createEmployee(@Validated @RequestBody CreateEmployeeCommand command) {
         return employeesService.createEmployee(command);
     }
 
