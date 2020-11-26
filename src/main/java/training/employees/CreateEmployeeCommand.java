@@ -14,5 +14,6 @@ public class CreateEmployeeCommand {
 
     @Schema(description="name of the employee", example = "John Doe")
     @NotBlank(message = "the name of the employee can not be null")
+    @StartsWithLetter(message = "the name must start with...", letter = "J")
     private String name;
 }
