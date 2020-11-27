@@ -18,12 +18,7 @@ import java.util.stream.Collectors;
 @Slf4j
 public class EmployeesService {
 
-    private static final AtomicLong idGenerator = new AtomicLong();
-
-    private static final List<Employee> employees = new ArrayList<>(Arrays.asList(
-            new Employee(idGenerator.incrementAndGet(), "John Doe"),
-            new Employee(idGenerator.incrementAndGet(), "Jack Doe")
-    ));
+    private final EmployeesRepository employeesRepository;
 
     private final ModelMapper modelMapper;
 
@@ -33,43 +28,31 @@ public class EmployeesService {
 
         java.lang.reflect.Type targetListType = new TypeToken<List<EmployeeDto>>() {}.getType();
         return modelMapper.map(
-                employees.stream()
-                    .filter(e -> !prefix.isPresent() ||
-                            e.getName().toLowerCase().startsWith(prefix.get().toLowerCase()))
-                .collect(Collectors.toList())
+                employeesRepository.listEmployees()
                 , targetListType);
     }
 
     public EmployeeDto findEmployeeById(long id) {
-        return employees.stream()
-                .filter(e -> e.getId() == id)
-                .map(e -> modelMapper.map(e, EmployeeDto.class))
-                .findAny()
-                .orElseThrow(() -> new IllegalArgumentException("Employee has not found with id" + id));
+        return modelMapper.map(employeesRepository.findById(id), EmployeeDto.class);
     }
 
     public EmployeeDto createEmployee(CreateEmployeeCommand command) {
-        Employee employee = new Employee(idGenerator.incrementAndGet(), command.getName());
-        employees.add(employee);
+        Employee employee = new Employee(command.getName());
+        employeesRepository.createEmployee(employee);
         return modelMapper.map(employee, EmployeeDto.class);
     }
 
     public EmployeeDto updateEmployee(long id, UpdateEmployeeCommand command) {
-        Employee employee = employees.stream()
-                .filter(e -> e.getId() == id)
-                .findAny().orElseThrow(() -> new IllegalArgumentException("Employee has not found with id" + id));
-        employee.setName(command.getName());
+        Employee employee = new Employee(id, command.getName());
+        employeesRepository.updateEmployee(employee);
         return modelMapper.map(employee, EmployeeDto.class);
     }
 
     public void deleteEmployee(long id) {
-        Employee employee = employees.stream()
-                .filter(e -> e.getId() == id)
-                .findAny().orElseThrow(() -> new IllegalArgumentException("Employee has not found with id" + id));
-        employees.remove(employee);
+        employeesRepository.deleteEmployee(id);
     }
 
     public void clearAll() {
-        employees.clear();
+        employeesRepository.deleteAllEmployee();
     }
 }
