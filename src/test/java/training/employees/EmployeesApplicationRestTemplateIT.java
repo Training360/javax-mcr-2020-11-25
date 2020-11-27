@@ -1,6 +1,7 @@
 package training.employees;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -8,12 +9,14 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
+import org.springframework.test.context.jdbc.Sql;
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@Sql(statements = "delete from employees")
 public class EmployeesApplicationRestTemplateIT {
 
     @Autowired
@@ -22,12 +25,12 @@ public class EmployeesApplicationRestTemplateIT {
     @Autowired
     EmployeesService employeesService;
 
-    @BeforeEach
-    void init() {
-        employeesService.clearAll();
-    }
+//    @BeforeEach
+//    void init() {
+//        employeesService.clearAll();
+//    }
 
-    @Test
+    @RepeatedTest(2)
     void create() {
         template.exchange("/api/employees",
                 HttpMethod.POST,
