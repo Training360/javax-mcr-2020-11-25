@@ -1,5 +1,6 @@
 package training.employees;
 
+import liquibase.pro.packaged.C;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -20,6 +21,8 @@ public class EmployeesService {
     private final ModelMapper modelMapper;
 
     private final AddressesGateway addressesGateway;
+
+    private final EventStoreGateway eventStoreGateway;
 
     public List<EmployeeDto> listEmployees(Optional<String> prefix) {
         log.info("List employees");
@@ -44,6 +47,11 @@ public class EmployeesService {
     public EmployeeDto createEmployee(CreateEmployeeCommand command) {
         Employee employee = new Employee(command.getName());
         employeesRepository.save(employee);
+
+        CreateEventCommand createEventCommand = new CreateEventCommand();
+        createEventCommand.setMessage("Employee has been created: " + command.getName());
+        eventStoreGateway.sendEvent(createEventCommand);
+
         return modelMapper.map(employee, EmployeeDto.class);
     }
 

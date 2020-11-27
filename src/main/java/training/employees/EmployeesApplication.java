@@ -7,6 +7,11 @@ import org.modelmapper.ModelMapper;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.jms.support.converter.MappingJackson2MessageConverter;
+import org.springframework.jms.support.converter.MessageConverter;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @SpringBootApplication
 public class EmployeesApplication {
@@ -32,6 +37,17 @@ public class EmployeesApplication {
 						.title("Employees API")
 						.version("1.0.0")
 						.description("Operations with employees"));
+	}
+
+	@Bean
+	public MessageConverter messageConverter(ObjectMapper objectMapper){
+		MappingJackson2MessageConverter converter =
+				new MappingJackson2MessageConverter();
+		converter.setTypeIdPropertyName("_typeId");
+		Map map = new HashMap();
+		map.put("CreateEventCommand", CreateEventCommand.class);
+		converter.setTypeIdMappings(map);
+		return converter;
 	}
 
 }
