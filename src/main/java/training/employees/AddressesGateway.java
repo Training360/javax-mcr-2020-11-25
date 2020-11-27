@@ -19,6 +19,8 @@ public class AddressesGateway {
     }
 
     public AddressDto getAddress(String name) {
-        return restTemplate.getForObject(url, AddressDto.class, name);
+        AddressDto addressDto = restTemplate.getForObject(url, AddressDto.class, name);
+//        addressDto.setAddress(addressDto.getAddress().toUpperCase());
+        return addressDto;
     }
 }
