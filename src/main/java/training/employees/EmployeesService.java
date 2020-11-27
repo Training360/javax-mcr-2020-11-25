@@ -5,13 +5,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicLong;
-import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -28,31 +25,36 @@ public class EmployeesService {
 
         java.lang.reflect.Type targetListType = new TypeToken<List<EmployeeDto>>() {}.getType();
         return modelMapper.map(
-                employeesRepository.listEmployees()
+                employeesRepository.findAll()
                 , targetListType);
     }
 
     public EmployeeDto findEmployeeById(long id) {
-        return modelMapper.map(employeesRepository.findById(id), EmployeeDto.class);
+        return modelMapper.map(employeesRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Not found"))
+                , EmployeeDto.class);
     }
 
     public EmployeeDto createEmployee(CreateEmployeeCommand command) {
         Employee employee = new Employee(command.getName());
-        employeesRepository.createEmployee(employee);
+        employeesRepository.save(employee);
         return modelMapper.map(employee, EmployeeDto.class);
     }
 
+    @Transactional
     public EmployeeDto updateEmployee(long id, UpdateEmployeeCommand command) {
-        Employee employee = new Employee(id, command.getName());
-        employeesRepository.updateEmployee(employee);
+        Employee employee = employeesRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Not found"));
+        employee.setName(command.getName());
+
         return modelMapper.map(employee, EmployeeDto.class);
     }
 
     public void deleteEmployee(long id) {
-        employeesRepository.deleteEmployee(id);
+        employeesRepository.deleteById(id);
     }
 
     public void clearAll() {
-        employeesRepository.deleteAllEmployee();
+        employeesRepository.deleteAll();
     }
 }
