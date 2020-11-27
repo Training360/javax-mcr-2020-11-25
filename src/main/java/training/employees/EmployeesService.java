@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
+import org.springframework.boot.actuate.audit.listener.AuditApplicationEvent;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,6 +25,8 @@ public class EmployeesService {
     private final AddressesGateway addressesGateway;
 
     private final EventStoreGateway eventStoreGateway;
+
+    private final ApplicationEventPublisher applicationEventPublisher;
 
     public List<EmployeeDto> listEmployees(Optional<String> prefix) {
         log.info("List employees");
@@ -51,6 +55,9 @@ public class EmployeesService {
         CreateEventCommand createEventCommand = new CreateEventCommand();
         createEventCommand.setMessage("Employee has been created: " + command.getName());
         eventStoreGateway.sendEvent(createEventCommand);
+
+        applicationEventPublisher.publishEvent(new AuditApplicationEvent("user1",
+                "create-employee", "employee-name", command.getName()));
 
         return modelMapper.map(employee, EmployeeDto.class);
     }
