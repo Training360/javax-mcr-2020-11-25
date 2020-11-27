@@ -18,4 +18,6 @@ public class EmployeeDto {
 
     @Schema(description="name of the employee", example = "John Doe")
     private String name;
+
+    private AddressDto addressDto;
 }

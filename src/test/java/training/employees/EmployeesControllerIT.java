@@ -28,8 +28,8 @@ public class EmployeesControllerIT {
     @Test
     void testList() throws Exception {
         when(employeesService.listEmployees(any())).thenReturn(Arrays.asList(
-                new EmployeeDto(1L, "John Test Doe"),
-                new EmployeeDto(2L, "Jack Test Doe")
+                new EmployeeDto(1L, "John Test Doe", null),
+                new EmployeeDto(2L, "Jack Test Doe", null)
         ));
 
         mockMvc.perform(get("/api/employees"))

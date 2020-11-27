@@ -19,6 +19,8 @@ public class EmployeesService {
 
     private final ModelMapper modelMapper;
 
+    private final AddressesGateway addressesGateway;
+
     public List<EmployeeDto> listEmployees(Optional<String> prefix) {
         log.info("List employees");
         log.debug("List employees - prefix is: " + prefix);
@@ -30,9 +32,13 @@ public class EmployeesService {
     }
 
     public EmployeeDto findEmployeeById(long id) {
-        return modelMapper.map(employeesRepository.findById(id)
+        EmployeeDto employeeDto = modelMapper.map(employeesRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Not found"))
                 , EmployeeDto.class);
+
+        employeeDto.setAddressDto(addressesGateway.getAddress(employeeDto.getName()));
+
+        return employeeDto;
     }
 
     public EmployeeDto createEmployee(CreateEmployeeCommand command) {
