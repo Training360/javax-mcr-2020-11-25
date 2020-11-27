@@ -1,6 +1,7 @@
 package training.employees;
 
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.stereotype.Service;
@@ -14,6 +15,7 @@ import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
+@Slf4j
 public class EmployeesService {
 
     private static final AtomicLong idGenerator = new AtomicLong();
@@ -26,6 +28,9 @@ public class EmployeesService {
     private final ModelMapper modelMapper;
 
     public List<EmployeeDto> listEmployees(Optional<String> prefix) {
+        log.info("List employees");
+        log.debug("List employees - prefix is: " + prefix);
+
         java.lang.reflect.Type targetListType = new TypeToken<List<EmployeeDto>>() {}.getType();
         return modelMapper.map(
                 employees.stream()
